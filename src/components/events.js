@@ -1,16 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function Events() {
   let [date, setDate] = useState("");
   let [name, setName] = useState("");
-  let [event, setEvent] = useState([]);
+  let [event, setEvent] = useState(() => {
+    return JSON.parse(localStorage.getItem("events")) || [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("events", JSON.stringify(event));
+  }, [event]);
 
   let addEvent = () => {
     if (!name || !date) return;
 
     let newEvent = { name, date };
-    console.log([...event, newEvent]);
-    setEvent([...event, newEvent]);
+    let updatedEvents = [...event, newEvent];
+    setEvent(updatedEvents);
     setName("");
     setDate("");
   };
@@ -21,6 +27,11 @@ function Events() {
     let diff = eventDate - today;
 
     return Math.ceil(diff / (1000 * 60 * 60 * 24));
+  };
+
+  let deleteEvent = (e) => {
+    const updatedEvents = event.filter((_, i) => i !== e);
+    setEvent(updatedEvents);
   };
 
   return (
@@ -53,6 +64,7 @@ function Events() {
                   ? "Today"
                   : "Already passed"}
             </p>
+            <button onClick={() => deleteEvent(i)}>Delete</button>
           </div>
         );
       })}
