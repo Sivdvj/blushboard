@@ -14,7 +14,7 @@ function Events() {
   let addEvent = () => {
     if (!name || !date) return;
 
-    let newEvent = { name, date };
+    let newEvent = { id: Date.now, name, date };
     let updatedEvents = [...event, newEvent];
     setEvent(updatedEvents);
     setName("");
@@ -54,7 +54,7 @@ function Events() {
       {event.map((e, i) => {
         let daysLeft = countDays(e.date);
         return (
-          <div key={i}>
+          <div key={e.id}>
             <p>{e.name}</p>
             <p>{e.date}</p>
             <p>
