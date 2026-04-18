@@ -29,8 +29,8 @@ function Events() {
     return Math.ceil(diff / (1000 * 60 * 60 * 24));
   };
 
-  let deleteEvent = (e) => {
-    const updatedEvents = event.filter((_, i) => i !== e);
+  let deleteEvent = (id) => {
+    const updatedEvents = event.filter((e) => e.id !== id);
     setEvent(updatedEvents);
   };
 
@@ -51,7 +51,7 @@ function Events() {
       />
       <button onClick={addEvent}>Add</button>
 
-      {event.map((e, i) => {
+      {event.map((e) => {
         let daysLeft = countDays(e.date);
         return (
           <div key={e.id}>
@@ -64,7 +64,7 @@ function Events() {
                   ? "Today"
                   : "Already passed"}
             </p>
-            <button onClick={() => deleteEvent(i)}>Delete</button>
+            <button onClick={() => deleteEvent(e.id)}>Delete</button>
           </div>
         );
       })}
