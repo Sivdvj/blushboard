@@ -14,7 +14,7 @@ function Events() {
   let addEvent = () => {
     if (!name || !date) return;
 
-    let newEvent = { id: Date.now, name, date };
+    let newEvent = { id: Date.now(), name, date };
     let updatedEvents = [...event, newEvent];
     setEvent(updatedEvents);
     setName("");
