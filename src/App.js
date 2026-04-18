@@ -2,6 +2,7 @@ import Header from "./components/header";
 import Events from "./components/events";
 import Pomodoro from "./components/pomodoro";
 import Reminder from "./components/reminder";
+import HabitTracker from "./components/habit";
 function App() {
   return (
     <div className="App">
@@ -9,6 +10,7 @@ function App() {
       <Events />
       <Pomodoro />
       <Reminder />
+      <HabitTracker />
     </div>
   );
 }
