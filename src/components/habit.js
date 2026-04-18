@@ -1,10 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function HabitTracker() {
-  let [habit, setHabit] = useState([
-    { name: "Drink Water", days: [false, false, false] },
-    { name: "DSA", days: [false, false, false] },
-  ]);
+  let [habit, setHabit] = useState(() => {
+    return (
+      JSON.parse(localStorage.getItem("habits")) || [
+        { name: "Drink Water", days: [false, false, false] },
+        { name: "DSA", days: [false, false, false] },
+      ]
+    );
+  });
+
+  useEffect(() => {
+    localStorage.setItem("habits", JSON.stringify(habit));
+  }, [habit]);
 
   let toggleDay = (id, dayid) => {
     let updatedHabits = habit.map((h, i) => {
