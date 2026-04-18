@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 
 function HabitTracker() {
+  const daysInMonth = 30;
+  let [hname, setName] = useState("");
   let [habit, setHabit] = useState(() => {
     return (
       JSON.parse(localStorage.getItem("habits")) || [
-        { name: "Drink Water", days: [false, false, false] },
-        { name: "DSA", days: [false, false, false] },
+        { name: "Drink Water", days: Array(daysInMonth).fill(false) },
+        { name: "DSA", days: Array(daysInMonth).fill(false) },
       ]
     );
   });
@@ -14,6 +16,15 @@ function HabitTracker() {
     localStorage.setItem("habits", JSON.stringify(habit));
   }, [habit]);
 
+  let addHabit = () => {
+    if (!hname) return;
+    let updatedHabit = [
+      ...habit,
+      { name: hname, days: Array(daysInMonth).fill(false) },
+    ];
+    setHabit(updatedHabit);
+    setName("");
+  };
   let toggleDay = (id, dayid) => {
     let updatedHabits = habit.map((h, i) => {
       if (i !== id) return h;
@@ -29,12 +40,19 @@ function HabitTracker() {
   return (
     <div>
       <h2>Habit Tracker</h2>
+      <input
+        type="text"
+        placeholder="Enter habit"
+        value={hname}
+        onChange={(e) => setName(e.target.value)}
+      />
+      <button onClick={addHabit}>Add</button>
       {habit.map((h, id) => (
         <div key={id}>
           <p>{h.name}</p>
           {h.days.map((d, dayid) => (
             <input
-              key="dayid"
+              key={dayid}
               type="checkbox"
               checked={d}
               onChange={() => toggleDay(id, dayid)}
