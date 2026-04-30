@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import Animation from "../assets/animations";
+import { Icon } from "@iconify/react";
+
 function Pomodoro({ goto }) {
   let [time, setTime] = useState(25 * 60);
   let [running, setRunning] = useState(false);
@@ -21,16 +23,43 @@ function Pomodoro({ goto }) {
   };
 
   return (
-    <div className="bg-pink-100">
+    <div className="absolute z-0 inset-0 bg-pink-200 overflow-hidden">
+      <button
+        className="font-bold bg-pink-100 text-pink-500 p-4 rounded-full hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
+        onClick={() => goto("home")}
+      >
+        <Icon icon="ic:round-arrow-back" className="w-10 h-10" />
+      </button>
       <Animation count={4} duration={10} />
-      {/* <div className="relative z-10">
-        <h2>Pomodoro</h2>
-        <button onClick={() => goto("home")}>Back</button>
-        <p>{formatTime()}</p>
-        <button onClick={() => setRunning(true)}>Start</button>
-        <button onClick={() => setRunning(false)}>Pause</button>
-        <button onClick={() => setTime(25 * 60)}>Reset</button>
-      </div> */}
+      <div className="relative z-10 flex flex-col items-center justify-center h-screen">
+        <h2 className="text-6xl font-extrabold mb-10 text-pink-500 ">
+          Pomodoro
+        </h2>
+
+        <div className="font-extrabold text-pink-400 text-8xl">
+          {formatTime()}
+        </div>
+        <div className="flex gap-4">
+          <button
+            className="font-bold bg-pink-100 text-pink-500 p-4 rounded-full hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
+            onClick={() => setRunning(false)}
+          >
+            <Icon icon="mingcute:pause-fill" className="w-10 h-10" />
+          </button>
+          <button
+            className="font-bold bg-pink-100 text-pink-500 p-4 rounded-full hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
+            onClick={() => setRunning(true)}
+          >
+            <Icon icon="mingcute:play-fill" className="w-10 h-10" />
+          </button>
+          <button
+            className="font-bold bg-pink-100 text-pink-500 p-4 rounded-full hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
+            onClick={() => setTime(25 * 60)}
+          >
+            <Icon icon="ic:round-replay" className="w-10 h-10" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

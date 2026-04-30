@@ -6,10 +6,10 @@ function Ripples({ count = 5, duration = 7 }) {
   useEffect(() => {
     let h = window.innerHeight;
     setSize(h);
-  });
+  }, []);
 
   return (
-    <div className="relative flex items-center  justify-center h-screen">
+    <div className="absolute inset-0 z-0 justify-center flex items-center">
       {circles.map((_, i) => (
         <div
           key={i}
