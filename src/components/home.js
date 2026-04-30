@@ -1,0 +1,28 @@
+function Home() {
+  return (
+    <div className="flex flex-col bg-gradient-to-br from-pink-100 to-pink-300 items-center justify-center h-screen">
+      <h1 className="text-6xl font-extrabold mb-10 text-pink-500 transform hover:scale-125 transition duration-300 ease-in-out">
+        BlushBoard
+      </h1>
+      <p className="text-gray-600 text-lg font-bold mb-10">
+        Your productivity space
+      </p>
+      <div className="flex gap-4 font-bold text-lg">
+        <button className="bg-pink-100 text-pink-500 p-4 rounded-2xl hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out">
+          Events
+        </button>
+        <button className="bg-pink-100 text-pink-500 p-4 rounded-2xl hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out">
+          Pomodoro
+        </button>
+        <button className="bg-pink-100 text-pink-500 p-4 rounded-2xl hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out">
+          Reminder
+        </button>
+        <button className="bg-pink-100 text-pink-500 p-4 rounded-2xl hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out">
+          Tracker
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default Home;
