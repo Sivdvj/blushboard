@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.circle {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: rgb(236, 72, 153);
+  animation: ripple 7s infinite ease-in-out;
+}
+
+.delay {
+  animation-delay: 3.5s;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.8;
+  }
+  33% {
+    transform: scale(2);
+    opacity: 0.5;
+  }
+  66% {
+    transform: scale(3.5);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(5);
+    opacity: 0;
+  }
+}
