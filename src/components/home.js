@@ -9,25 +9,25 @@ function Home({ goto }) {
       </p>
       <div className="flex gap-4 font-bold text-lg">
         <button
-          className="bg-pink-100 text-pink-500 p-4 rounded-2xl hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
+          className="shadow-md bg-pink-100/70 backdrop-blur-md text-pink-500 p-4 rounded-2xl hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
           onClick={() => goto("events")}
         >
           Events
         </button>
         <button
-          className="bg-pink-100 text-pink-500 p-4 rounded-2xl hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
+          className="shadow-md bg-pink-100/70 backdrop-blur-md text-pink-500 p-4 rounded-2xl hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
           onClick={() => goto("pomodoro")}
         >
           Pomodoro
         </button>
         <button
-          className="bg-pink-100 text-pink-500 p-4 rounded-2xl hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
+          className="shadow-md bg-pink-100/70 backdrop-blur-md text-pink-500 p-4 rounded-2xl hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
           onClick={() => goto("reminder")}
         >
           Reminder
         </button>
         <button
-          className="bg-pink-100 text-pink-500 p-4 rounded-2xl hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
+          className="shadow-md bg-pink-100/70 backdrop-blur-md text-pink-500 p-4 rounded-2xl hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
           onClick={() => goto("tracker")}
         >
           Tracker

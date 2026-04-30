@@ -34,9 +34,11 @@ function Pomodoro({ goto }) {
         >
           <Icon icon="ph:flower-fill" className="w-10 h-10" />
         </button>
-        <h2 className="text-6xl font-extrabold text-pink-500 ">Pomodoro</h2>
+        <h2 className="absolute z-10 top-10 text-6xl font-extrabold text-pink-500 ">
+          Pomodoro
+        </h2>
 
-        <div className=" tracking-wide font-extrabold text-pink-400 text-8xl">
+        <div className="drop-shadow-lg font-extrabold text-pink-200 text-[80px] sm:text-[100px] md:text-[160px] lg:text-[250px]">
           {formatTime()}
         </div>
         <div className="flex gap-6 items-center justify-center">
