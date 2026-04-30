@@ -9,7 +9,7 @@
   animation-name: ripple;
   animation-iteration-count: infinite;
   animation-timing-function: ease-in-out;
-  box-shadow: rgb(236, 72, 153, 0.4);
+  box-shadow: rgb(236, 72, 153, 0.3);
 }
 
 @keyframes ripple {
