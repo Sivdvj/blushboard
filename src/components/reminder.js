@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function Reminder() {
+function Reminder({ goto }) {
   let [reminder, setReminder] = useState(() => {
     return JSON.parse(localStorage.getItem("reminder")) || [];
   });
@@ -25,6 +25,8 @@ function Reminder() {
   return (
     <div>
       <h2>Reminders</h2>
+      <button onClick={() => goto("home")}>Back</button>
+
       <input
         type="text"
         placeholder="Enter reminder"

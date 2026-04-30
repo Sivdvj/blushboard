@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function HabitTracker() {
+function HabitTracker({ goto }) {
   const daysInMonth = 30;
   let [hname, setName] = useState("");
   let [habit, setHabit] = useState(() => {
@@ -40,6 +40,7 @@ function HabitTracker() {
   return (
     <div>
       <h2>Habit Tracker</h2>
+      <button onClick={() => goto("home")}>Back</button>
       <input
         type="text"
         placeholder="Enter habit"

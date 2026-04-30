@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function Events() {
+function Events({ goto }) {
   let [date, setDate] = useState("");
   let [name, setName] = useState("");
   let [event, setEvent] = useState(() => {
@@ -37,6 +37,8 @@ function Events() {
   return (
     <div>
       <h2>Events</h2>
+      <button onClick={() => goto("home")}>Back</button>
+
       <input
         type="text"
         placeholder="Enter event name"
