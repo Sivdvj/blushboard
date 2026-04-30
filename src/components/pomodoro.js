@@ -21,16 +21,16 @@ function Pomodoro({ goto }) {
   };
 
   return (
-    <div className="relative">
-      <Animation />
-      <div className="relative z-10">
+    <div className="bg-pink-100">
+      <Animation count={4} duration={10} />
+      {/* <div className="relative z-10">
         <h2>Pomodoro</h2>
         <button onClick={() => goto("home")}>Back</button>
         <p>{formatTime()}</p>
         <button onClick={() => setRunning(true)}>Start</button>
         <button onClick={() => setRunning(false)}>Pause</button>
         <button onClick={() => setTime(25 * 60)}>Reset</button>
-      </div>
+      </div> */}
     </div>
   );
 }

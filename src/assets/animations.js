@@ -1,8 +1,27 @@
-function Ripples() {
+import { useState, useEffect } from "react";
+function Ripples({ count = 5, duration = 7 }) {
+  let circles = Array.from({ length: count });
+  let [size, setSize] = useState(0);
+
+  useEffect(() => {
+    let h = window.innerHeight;
+    setSize(h);
+  });
+
   return (
     <div className="relative flex items-center  justify-center h-screen">
-      <div className="circle"></div>
-      <div className="circle delay"></div>
+      {circles.map((_, i) => (
+        <div
+          key={i}
+          className="circle"
+          style={{
+            width: size,
+            height: size,
+            animationDuration: `${duration}s`,
+            animationDelay: `${-(i * duration) / count}s`,
+          }}
+        ></div>
+      ))}
     </div>
   );
 }
