@@ -3,18 +3,29 @@ import Animation from "../assets/animations";
 import { Icon } from "@iconify/react";
 
 function Pomodoro({ goto }) {
-  let [time, setTime] = useState(25 * 60);
   let [running, setRunning] = useState(false);
+  let [settings, showSettings] = useState(false);
+  let [minutes, setMinutes] = useState(25);
+  let [time, setTime] = useState(minutes * 60);
 
   useEffect(() => {
     if (!running) return;
     let interval = setInterval(() => {
-      setTime((prev) => (prev > 0 ? prev - 1 : 0));
+      setTime((prev) => {
+        if (prev <= 1) {
+          setRunning(false);
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
 
     return () => clearInterval(interval);
   }, [running]);
 
+  useEffect(() => {
+    setTime(minutes * 60);
+  }, [minutes]);
   let formatTime = () => {
     let minutes = Math.floor(time / 60);
     let seconds = time % 60;
@@ -44,23 +55,40 @@ function Pomodoro({ goto }) {
         <div className="flex gap-6 items-center justify-center">
           <button
             className="font-bold bg-pink-100/70 text-pink-500 backdrop-blur-md shadow-md p-4 rounded-full hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
-            onClick={() => setRunning(false)}
+            onClick={() => showSettings(!settings)}
           >
-            <Icon icon="mingcute:pause-fill" className="w-10 h-10" />
+            <Icon icon="mingcute:settings-6-fill" className="w-10 h-10" />
           </button>
           <button
             className="font-bold bg-pink-100/70 text-pink-500 backdrop-blur-md shadow-md p-4 rounded-full hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
-            onClick={() => setRunning(true)}
+            onClick={() => setRunning(!running)}
           >
-            <Icon icon="mingcute:play-fill" className="w-16 h-16" />
+            <Icon
+              icon={!running ? "mingcute:play-fill" : "mingcute:pause-fill"}
+              className="w-16 h-16"
+            />
           </button>
           <button
             className="font-bold bg-pink-100/70 text-pink-500 backdrop-blur-md shadow-md p-4 rounded-full hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
-            onClick={() => setTime(25 * 60)}
+            onClick={() => {
+              setTime(minutes * 60);
+              setRunning(false);
+            }}
           >
             <Icon icon="ic:round-replay" className="w-10 h-10" />
           </button>
         </div>
+        {settings && (
+          <div>
+            <h1>Set Timer</h1>
+            <input
+              type="number"
+              placeholder="Set Time"
+              value={minutes}
+              onChange={(e) => setMinutes(e.target.value)}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
