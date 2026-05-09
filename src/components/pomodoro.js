@@ -1,9 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Animation from "../assets/animations";
 import PomodoroSettings from "../assets/pomodoroSettings";
 import { Icon } from "@iconify/react";
+import Bell from "../assets/sounds/bell.mp3";
+import Forest from "../assets/sounds/forest.mp3";
+import Rain from "../assets/sounds/rain.mp3";
+import WhiteNoise from "../assets/sounds/white-noise.mp3";
+
+let tracks = {
+  rain: Rain,
+  forest: Forest,
+  white: WhiteNoise,
+};
 
 function Pomodoro({ goto }) {
+  let bellSound = useRef(new Audio(Bell));
+
+  let [music, setMusic] = useState("rain");
+  let [showMusic, setShowMusic] = useState(false);
+  let sound = useRef(new Audio(tracks[music]));
+
   let [running, setRunning] = useState(false);
   let [settings, showSettings] = useState(false);
   let [minutes, setMinutes] = useState(() => {
@@ -48,10 +64,30 @@ function Pomodoro({ goto }) {
   }, [minutes, sbreak, lbreak, laps, tlaps, goal, mode, time]);
 
   useEffect(() => {
+    sound.current.pause();
+    sound.current = new Audio(tracks[music]);
+
+    sound.current.loop = true;
+    sound.current.volume = 0.5;
+    if (running) {
+      sound.current.play();
+    }
+  }, [music]);
+
+  useEffect(() => {
+    if (running) {
+      sound.current.play();
+    } else {
+      sound.current.pause();
+    }
+  }, [running]);
+
+  useEffect(() => {
     if (!running) return;
     let interval = setInterval(() => {
       setTime((prev) => {
         if (prev <= 1) {
+          bellSound.current.play();
           let updatedTime;
           if (mode === "focus") {
             let updatedLaps = tlaps + 1;
@@ -99,6 +135,12 @@ function Pomodoro({ goto }) {
           onClick={() => goto("home")}
         >
           <Icon icon="ph:flower-fill" className="w-10 h-10" />
+        </button>
+        <button
+          className="shadow-md absolute z-10 right-10 top-10 font-bold bg-pink-100 text-pink-500 p-4 rounded-full hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
+          onClick={() => setShowMusic(!showMusic)}
+        >
+          <Icon icon="mingcute:music-2-fill" className="w-10 h-10" />
         </button>
         <div className="absolute z-10 top-10 flex flex-col gap-4 items-center">
           <h2 className="text-6xl font-extrabold text-pink-500 ">
@@ -197,6 +239,14 @@ function Pomodoro({ goto }) {
               value={goal}
               setValue={setGoal}
             />
+          </div>
+        )}
+
+        {showMusic && (
+          <div>
+            <button onClick={() => setMusic("rain")}>a </button>
+            <button onClick={() => setMusic("forest")}>b </button>
+            <button onClick={() => setMusic("white")}>c </button>
           </div>
         )}
       </div>
