@@ -6,14 +6,30 @@ function Pomodoro({ goto }) {
   let [running, setRunning] = useState(false);
   let [settings, showSettings] = useState(false);
   let [minutes, setMinutes] = useState(25);
+  let [sbreak, setSbreak] = useState(5);
+  let [lbreak, setLbreak] = useState(15);
+  let [laps, setLaps] = useState(4);
+  let [tlaps, setTotalLaps] = useState(1);
+  let [mode, setMode] = useState("focus");
   let [time, setTime] = useState(minutes * 60);
+
+  useEffect(() => {
+    if (mode === "focus") {
+      setTime(minutes * 60);
+    } else if (mode === "shortBreak") {
+      setTime(sbreak * 60);
+    } else if (mode === "longBreak") {
+      setTime(lbreak * 60);
+    }
+  }, [mode, minutes, sbreak, lbreak]);
 
   useEffect(() => {
     if (!running) return;
     let interval = setInterval(() => {
       setTime((prev) => {
         if (prev <= 1) {
-          setRunning(false);
+          // setRunning(false);
+          handleSessions();
           return 0;
         }
         return prev - 1;
@@ -23,9 +39,24 @@ function Pomodoro({ goto }) {
     return () => clearInterval(interval);
   }, [running]);
 
-  useEffect(() => {
-    setTime(minutes * 60);
-  }, [minutes]);
+  let handleSessions = () => {
+    if (mode === "focus") {
+      setTotalLaps((prev) => {
+        let updatedLaps = prev + 1;
+        if (updatedLaps == 8) {
+          setTotalLaps(0); // TODO: what to do after 8 laps
+        }
+        if ((updatedLaps + 1) % laps === 0) {
+          setMode("longBreak");
+        } else {
+          setMode("shortBreak");
+        }
+        return updatedLaps;
+      });
+    } else {
+      setMode("focus");
+    }
+  };
   let formatTime = () => {
     let minutes = Math.floor(time / 60);
     let seconds = time % 60;
@@ -46,9 +77,9 @@ function Pomodoro({ goto }) {
           <Icon icon="ph:flower-fill" className="w-10 h-10" />
         </button>
         <h2 className="absolute z-10 top-10 text-6xl font-extrabold text-pink-500 ">
-          Pomodoro
+          {mode}
         </h2>
-
+        <h3>{tlaps} / 8</h3>
         <div className="drop-shadow-lg font-extrabold text-pink-200 text-[80px] sm:text-[100px] md:text-[160px] lg:text-[250px]">
           {formatTime()}
         </div>
@@ -79,13 +110,46 @@ function Pomodoro({ goto }) {
           </button>
         </div>
         {settings && (
-          <div>
-            <h1>Set Timer</h1>
+          <div className="absolute inset-10 z-20 bg-pink-300/70 backdrop-blur-md shadow-lg rounded-3xl p-6 flex flex-col justify-center items-center gap-10">
+            <button
+              className="absolute left-10 top-10 bg-pink-100 text-pink-500 shadow-md rounded-full p-4 hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
+              onClick={() => showSettings(false)}
+            >
+              <Icon icon="mingcute:close-fill" className="w-10 h-10" />
+            </button>
+            <h1 className="text-5xl font-extrabold text-pink-500">
+              Set Focus Time
+            </h1>
             <input
               type="number"
-              placeholder="Set Time"
               value={minutes}
               onChange={(e) => setMinutes(e.target.value)}
+              className="w-40 mt-4 px-6 py-3 rounded-2xl outline-none bg-pink-100/70 text-pink-500 hover:scale-110 transition"
+            />
+            <h1 className="text-5xl font-extrabold text-pink-500">
+              Set Short Break
+            </h1>
+            <input
+              type="number"
+              value={sbreak}
+              onChange={(e) => setSbreak(e.target.value)}
+              className="w-40 mt-4 px-6 py-3 rounded-2xl outline-none bg-pink-100/70 text-pink-500 hover:scale-110 transition"
+            />
+            <h1 className="text-5xl font-extrabold text-pink-500">
+              Set Long Break
+            </h1>
+            <input
+              type="number"
+              value={lbreak}
+              onChange={(e) => setLbreak(e.target.value)}
+              className="w-40 mt-4 px-6 py-3 rounded-2xl outline-none bg-pink-100/70 text-pink-500 hover:scale-110 transition"
+            />
+            <h1 className="text-5xl font-extrabold text-pink-500">Set laps</h1>
+            <input
+              type="number"
+              value={laps}
+              onChange={(e) => setLaps(e.target.value)}
+              className="w-40 mt-4 px-6 py-3 rounded-2xl outline-none bg-pink-100/70 text-pink-500 hover:scale-110 transition"
             />
           </div>
         )}
