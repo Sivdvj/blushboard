@@ -5,14 +5,35 @@ import { Icon } from "@iconify/react";
 function Pomodoro({ goto }) {
   let [running, setRunning] = useState(false);
   let [settings, showSettings] = useState(false);
-  let [minutes, setMinutes] = useState(25);
-  let [sbreak, setSbreak] = useState(5);
-  let [lbreak, setLbreak] = useState(15);
-  let [laps, setLaps] = useState(4);
-  let [tlaps, setTotalLaps] = useState(0);
-  let [mode, setMode] = useState("focus");
+  let [minutes, setMinutes] = useState(() => {
+    return JSON.parse(localStorage.getItem("pomodoro"))?.minutes || 25;
+  });
+  let [sbreak, setSbreak] = useState(() => {
+    return JSON.parse(localStorage.getItem("pomodoro"))?.sbreak || 5;
+  });
+  let [lbreak, setLbreak] = useState(() => {
+    return JSON.parse(localStorage.getItem("pomodoro"))?.lbreak || 15;
+  });
+  let [laps, setLaps] = useState(() => {
+    return JSON.parse(localStorage.getItem("pomodoro"))?.laps || 4;
+  });
+  let [tlaps, setTotalLaps] = useState(() => {
+    return JSON.parse(localStorage.getItem("pomodoro"))?.tlaps || 0;
+  });
+  let [mode, setMode] = useState(() => {
+    return JSON.parse(localStorage.getItem("pomodoro"))?.mode || "focus";
+  });
   let [time, setTime] = useState(minutes * 60);
-  let [goal, setGoal] = useState(8);
+  let [goal, setGoal] = useState(() => {
+    return JSON.parse(localStorage.getItem("pomodoro"))?.goal || 8;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(
+      "pomodoro",
+      JSON.stringify({ minutes, sbreak, lbreak, laps, tlaps, goal, mode }),
+    );
+  }, [minutes, sbreak, lbreak, laps, tlaps, goal, mode]);
 
   useEffect(() => {
     if (mode === "focus") {
