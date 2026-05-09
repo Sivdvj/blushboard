@@ -1,10 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Animation from "../assets/animations";
 import { Icon } from "@iconify/react";
 
 function Pomodoro({ goto }) {
-  let firstLoad = useRef(true);
-
   let [running, setRunning] = useState(false);
   let [settings, showSettings] = useState(false);
   let [minutes, setMinutes] = useState(() => {
@@ -49,49 +47,38 @@ function Pomodoro({ goto }) {
   }, [minutes, sbreak, lbreak, laps, tlaps, goal, mode, time]);
 
   useEffect(() => {
-    if (firstLoad.current) {
-      firstLoad.current = false;
-      return;
-    }
-    if (mode === "focus") {
-      setTime(minutes * 60);
-    } else if (mode === "shortBreak") {
-      setTime(sbreak * 60);
-    } else if (mode === "longBreak") {
-      setTime(lbreak * 60);
-    }
-  }, [mode, minutes, sbreak, lbreak]);
-
-  useEffect(() => {
     if (!running) return;
     let interval = setInterval(() => {
       setTime((prev) => {
         if (prev <= 1) {
+          let updatedTime;
           if (mode === "focus") {
-            setTotalLaps((prev) => {
-              let updatedLaps = prev + 1;
-              if (updatedLaps === goal) {
-                setTotalLaps(0); // TODO: what to do after 8 laps
-              }
-              if (updatedLaps % laps === 0) {
-                setMode("longBreak");
-              } else {
-                setMode("shortBreak");
-              }
-              return updatedLaps;
-            });
+            let updatedLaps = tlaps + 1;
+            if (updatedLaps === goal) {
+              setTotalLaps(0);
+            } else {
+              setTotalLaps(updatedLaps);
+            }
+
+            if (updatedLaps % laps === 0) {
+              setMode("longBreak");
+              updatedTime = lbreak * 60;
+            } else {
+              setMode("shortBreak");
+              updatedTime = sbreak * 60;
+            }
           } else {
             setMode("focus");
+            updatedTime = minutes * 60;
           }
-
-          return 0;
+          return updatedTime;
         }
         return prev - 1;
       });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [running, laps, mode, goal]);
+  }, [running, laps, tlaps, mode, goal, minutes, sbreak, lbreak]);
 
   let formatTime = () => {
     let minutes = Math.floor(time / 60);
@@ -194,7 +181,7 @@ function Pomodoro({ goto }) {
             <input
               type="number"
               value={laps}
-              onChange={(e) => setLaps(e.target.value)}
+              onChange={(e) => setLaps(Number(e.target.value))}
               className="w-40 mt-4 px-6 py-3 rounded-2xl outline-none bg-pink-100/70 text-pink-500 hover:scale-110 transition"
             />
             <h1 className="text-5xl font-extrabold text-pink-500">
@@ -203,7 +190,7 @@ function Pomodoro({ goto }) {
             <input
               type="number"
               value={goal}
-              onChange={(e) => setGoal(e.target.value)}
+              onChange={(e) => setGoal(Number(e.target.value))}
               className="w-40 mt-4 px-6 py-3 rounded-2xl outline-none bg-pink-100/70 text-pink-500 hover:scale-110 transition"
             />
           </div>
