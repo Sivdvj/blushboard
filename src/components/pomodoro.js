@@ -107,9 +107,18 @@ function Pomodoro({ goto }) {
                 ? "Short Break"
                 : "Long Break"}
           </h2>
-          <h3 className="text-pink-500 font-extrabold text-4xl">
-            {tlaps} / {goal}
-          </h3>
+          <div className="flex gap-3">
+            {Array.from({ length: goal }).map((_, i) => (
+              <div
+                key={i}
+                className={
+                  i < tlaps + 1
+                    ? "w-5 h-5 bg-pink-500 rounded-full"
+                    : "w-5 h-5 border-2 border-pink-500 rounded-full"
+                }
+              ></div>
+            ))}
+          </div>
         </div>
         <div className="drop-shadow-lg font-extrabold text-pink-200 text-[80px] sm:text-[100px] md:text-[160px] lg:text-[250px]">
           {formatTime()}
