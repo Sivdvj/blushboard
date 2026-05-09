@@ -2,9 +2,11 @@ import { Icon } from "@iconify/react";
 
 function PomodoroSettings({ title, value, setValue }) {
   return (
-    <div className="flex gap-16 justify-evenly items-center">
-      <h1 className="text-3xl font-extrabold text-pink-500">{title}</h1>
-      <div className="flex gap-6 items-center">
+    <div className="flex gap-16 items-center w-full">
+      <h1 className="text-3xl font-extrabold text-pink-500 flex-1 text-right">
+        {title}
+      </h1>
+      <div className="flex gap-6 items-center flex-1 justify-start">
         <button onClick={() => setValue((prev) => Math.max(1, prev - 1))}>
           <Icon
             icon="fluent-emoji-high-contrast:minus"
@@ -12,7 +14,7 @@ function PomodoroSettings({ title, value, setValue }) {
           />
         </button>
         <div className="text-pink-500/90 font-bold text-6xl drop-shadow-sm">
-          {value}
+          {value < 10 ? `0${value}` : value}
         </div>
         <button onClick={() => setValue((prev) => prev + 1)}>
           <Icon

@@ -169,6 +169,9 @@ function Pomodoro({ goto }) {
             >
               <Icon icon="mingcute:close-fill" className="w-10 h-10" />
             </button>
+            <h2 className="absolute top-16 text-6xl font-extrabold text-pink-500">
+              Settings
+            </h2>
             <PomodoroSettings
               title="Set Focus Time"
               value={minutes}
