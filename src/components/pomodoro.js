@@ -1,8 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Animation from "../assets/animations";
 import { Icon } from "@iconify/react";
 
 function Pomodoro({ goto }) {
+  let firstLoad = useRef(true);
+
   let [running, setRunning] = useState(false);
   let [settings, showSettings] = useState(false);
   let [minutes, setMinutes] = useState(() => {
@@ -23,7 +25,9 @@ function Pomodoro({ goto }) {
   let [mode, setMode] = useState(() => {
     return JSON.parse(localStorage.getItem("pomodoro"))?.mode || "focus";
   });
-  let [time, setTime] = useState(minutes * 60);
+  let [time, setTime] = useState(() => {
+    return JSON.parse(localStorage.getItem("pomodoro"))?.time || minutes * 60;
+  });
   let [goal, setGoal] = useState(() => {
     return JSON.parse(localStorage.getItem("pomodoro"))?.goal || 8;
   });
@@ -31,11 +35,24 @@ function Pomodoro({ goto }) {
   useEffect(() => {
     localStorage.setItem(
       "pomodoro",
-      JSON.stringify({ minutes, sbreak, lbreak, laps, tlaps, goal, mode }),
+      JSON.stringify({
+        minutes,
+        sbreak,
+        lbreak,
+        laps,
+        tlaps,
+        goal,
+        mode,
+        time,
+      }),
     );
-  }, [minutes, sbreak, lbreak, laps, tlaps, goal, mode]);
+  }, [minutes, sbreak, lbreak, laps, tlaps, goal, mode, time]);
 
   useEffect(() => {
+    if (firstLoad.current) {
+      firstLoad.current = false;
+      return;
+    }
     if (mode === "focus") {
       setTime(minutes * 60);
     } else if (mode === "shortBreak") {
