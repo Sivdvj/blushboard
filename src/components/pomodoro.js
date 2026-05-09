@@ -9,9 +9,10 @@ function Pomodoro({ goto }) {
   let [sbreak, setSbreak] = useState(5);
   let [lbreak, setLbreak] = useState(15);
   let [laps, setLaps] = useState(4);
-  let [tlaps, setTotalLaps] = useState(1);
+  let [tlaps, setTotalLaps] = useState(0);
   let [mode, setMode] = useState("focus");
   let [time, setTime] = useState(minutes * 60);
+  let [goal, setGoal] = useState(8);
 
   useEffect(() => {
     if (mode === "focus") {
@@ -28,8 +29,23 @@ function Pomodoro({ goto }) {
     let interval = setInterval(() => {
       setTime((prev) => {
         if (prev <= 1) {
-          // setRunning(false);
-          handleSessions();
+          if (mode === "focus") {
+            setTotalLaps((prev) => {
+              let updatedLaps = prev + 1;
+              if (updatedLaps === goal) {
+                setTotalLaps(0); // TODO: what to do after 8 laps
+              }
+              if (updatedLaps % laps === 0) {
+                setMode("longBreak");
+              } else {
+                setMode("shortBreak");
+              }
+              return updatedLaps;
+            });
+          } else {
+            setMode("focus");
+          }
+
           return 0;
         }
         return prev - 1;
@@ -37,26 +53,8 @@ function Pomodoro({ goto }) {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [running]);
+  }, [running, laps, mode, goal]);
 
-  let handleSessions = () => {
-    if (mode === "focus") {
-      setTotalLaps((prev) => {
-        let updatedLaps = prev + 1;
-        if (updatedLaps == 8) {
-          setTotalLaps(0); // TODO: what to do after 8 laps
-        }
-        if ((updatedLaps + 1) % laps === 0) {
-          setMode("longBreak");
-        } else {
-          setMode("shortBreak");
-        }
-        return updatedLaps;
-      });
-    } else {
-      setMode("focus");
-    }
-  };
   let formatTime = () => {
     let minutes = Math.floor(time / 60);
     let seconds = time % 60;
@@ -77,8 +75,16 @@ function Pomodoro({ goto }) {
           <Icon icon="ph:flower-fill" className="w-10 h-10" />
         </button>
         <div className="absolute z-10 top-10 flex flex-col gap-4 items-center">
-          <h2 className="text-6xl font-extrabold text-pink-500 ">{mode}</h2>
-          <h3 className="text-pink-500 font-extrabold text-4xl">{tlaps} / 8</h3>
+          <h2 className="text-6xl font-extrabold text-pink-500 ">
+            {mode === "focus"
+              ? "Pomodoro"
+              : mode === "shortBreak"
+                ? "Short Break"
+                : "Long Break"}
+          </h2>
+          <h3 className="text-pink-500 font-extrabold text-4xl">
+            {tlaps} / {goal}
+          </h3>
         </div>
         <div className="drop-shadow-lg font-extrabold text-pink-200 text-[80px] sm:text-[100px] md:text-[160px] lg:text-[250px]">
           {formatTime()}
@@ -102,7 +108,9 @@ function Pomodoro({ goto }) {
           <button
             className="font-bold bg-pink-100/70 text-pink-500 backdrop-blur-md shadow-md p-4 rounded-full hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
             onClick={() => {
-              setTime(minutes * 60);
+              if (mode === "focus") setTime(minutes * 60);
+              else if (mode === "shortBreak") setTime(sbreak * 60);
+              else if (mode === "longBreak") setTime(lbreak * 60);
               setRunning(false);
             }}
           >
@@ -123,7 +131,7 @@ function Pomodoro({ goto }) {
             <input
               type="number"
               value={minutes}
-              onChange={(e) => setMinutes(e.target.value)}
+              onChange={(e) => setMinutes(Number(e.target.value))}
               className="w-40 mt-4 px-6 py-3 rounded-2xl outline-none bg-pink-100/70 text-pink-500 hover:scale-110 transition"
             />
             <h1 className="text-5xl font-extrabold text-pink-500">
@@ -132,7 +140,7 @@ function Pomodoro({ goto }) {
             <input
               type="number"
               value={sbreak}
-              onChange={(e) => setSbreak(e.target.value)}
+              onChange={(e) => setSbreak(Number(e.target.value))}
               className="w-40 mt-4 px-6 py-3 rounded-2xl outline-none bg-pink-100/70 text-pink-500 hover:scale-110 transition"
             />
             <h1 className="text-5xl font-extrabold text-pink-500">
@@ -141,7 +149,7 @@ function Pomodoro({ goto }) {
             <input
               type="number"
               value={lbreak}
-              onChange={(e) => setLbreak(e.target.value)}
+              onChange={(e) => setLbreak(Number(e.target.value))}
               className="w-40 mt-4 px-6 py-3 rounded-2xl outline-none bg-pink-100/70 text-pink-500 hover:scale-110 transition"
             />
             <h1 className="text-5xl font-extrabold text-pink-500">Set laps</h1>
@@ -149,6 +157,15 @@ function Pomodoro({ goto }) {
               type="number"
               value={laps}
               onChange={(e) => setLaps(e.target.value)}
+              className="w-40 mt-4 px-6 py-3 rounded-2xl outline-none bg-pink-100/70 text-pink-500 hover:scale-110 transition"
+            />
+            <h1 className="text-5xl font-extrabold text-pink-500">
+              Set Daily Goal
+            </h1>
+            <input
+              type="number"
+              value={goal}
+              onChange={(e) => setGoal(e.target.value)}
               className="w-40 mt-4 px-6 py-3 rounded-2xl outline-none bg-pink-100/70 text-pink-500 hover:scale-110 transition"
             />
           </div>
