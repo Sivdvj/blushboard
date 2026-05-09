@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Animation from "../assets/animations";
+import PomodoroSettings from "../assets/pomodoroSettings";
 import { Icon } from "@iconify/react";
 
 function Pomodoro({ goto }) {
@@ -159,48 +160,30 @@ function Pomodoro({ goto }) {
             >
               <Icon icon="mingcute:close-fill" className="w-10 h-10" />
             </button>
-            <h1 className="text-5xl font-extrabold text-pink-500">
-              Set Focus Time
-            </h1>
-            <input
-              type="number"
+            <PomodoroSettings
+              title="Set Focus Time"
               value={minutes}
-              onChange={(e) => setMinutes(Number(e.target.value))}
-              className="w-40 mt-4 px-6 py-3 rounded-2xl outline-none bg-pink-100/70 text-pink-500 hover:scale-110 transition"
+              setValue={setMinutes}
             />
-            <h1 className="text-5xl font-extrabold text-pink-500">
-              Set Short Break
-            </h1>
-            <input
-              type="number"
+            <PomodoroSettings
+              title="Set Short Break"
               value={sbreak}
-              onChange={(e) => setSbreak(Number(e.target.value))}
-              className="w-40 mt-4 px-6 py-3 rounded-2xl outline-none bg-pink-100/70 text-pink-500 hover:scale-110 transition"
+              setValue={setSbreak}
             />
-            <h1 className="text-5xl font-extrabold text-pink-500">
-              Set Long Break
-            </h1>
-            <input
-              type="number"
+            <PomodoroSettings
+              title="Set Long Break"
               value={lbreak}
-              onChange={(e) => setLbreak(Number(e.target.value))}
-              className="w-40 mt-4 px-6 py-3 rounded-2xl outline-none bg-pink-100/70 text-pink-500 hover:scale-110 transition"
+              setValue={setLbreak}
             />
-            <h1 className="text-5xl font-extrabold text-pink-500">Set laps</h1>
-            <input
-              type="number"
+            <PomodoroSettings
+              title="Set Laps"
               value={laps}
-              onChange={(e) => setLaps(Number(e.target.value))}
-              className="w-40 mt-4 px-6 py-3 rounded-2xl outline-none bg-pink-100/70 text-pink-500 hover:scale-110 transition"
+              setValue={setLaps}
             />
-            <h1 className="text-5xl font-extrabold text-pink-500">
-              Set Daily Goal
-            </h1>
-            <input
-              type="number"
+            <PomodoroSettings
+              title="Set Goal"
               value={goal}
-              onChange={(e) => setGoal(Number(e.target.value))}
-              className="w-40 mt-4 px-6 py-3 rounded-2xl outline-none bg-pink-100/70 text-pink-500 hover:scale-110 transition"
+              setValue={setGoal}
             />
           </div>
         )}
