@@ -118,10 +118,10 @@ function Pomodoro({ goto }) {
   }, [running, laps, tlaps, mode, goal, minutes, sbreak, lbreak]);
 
   let formatTime = () => {
-    let minutes = Math.floor(time / 60);
+    let mins = Math.floor(time / 60);
     let seconds = time % 60;
 
-    return `${minutes} : ${seconds < 10 ? "0" : ""}${seconds}`;
+    return `${mins < 10 ? "0" : ""}${mins} : ${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
   return (
@@ -136,12 +136,43 @@ function Pomodoro({ goto }) {
         >
           <Icon icon="ph:flower-fill" className="w-10 h-10" />
         </button>
-        <button
-          className="shadow-md absolute z-10 right-10 top-10 font-bold bg-pink-100 text-pink-500 p-4 rounded-full hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
-          onClick={() => setShowMusic(!showMusic)}
-        >
-          <Icon icon="mingcute:music-2-fill" className="w-10 h-10" />
-        </button>
+        <div className="absolute flex flex-col justify-center items-center gap-4 z-10 right-10 top-10 ">
+          <button
+            className="shadow-md font-bold bg-pink-100 text-pink-500 p-4 rounded-full hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
+            onClick={() => setShowMusic(!showMusic)}
+          >
+            <Icon icon="mingcute:music-2-fill" className="w-10 h-10" />
+          </button>
+
+          <div
+            className={`flex flex-col gap-4 transition-all duration-500 ease-in-out
+          ${
+            showMusic
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 -translate-y-4 pointer-events-none"
+          }`}
+          >
+            <button
+              className=" shadow-md font-bold bg-pink-100 text-pink-500 p-4 rounded-full hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
+              onClick={() => setMusic("rain")}
+            >
+              <Icon icon="mingcute:cloud-fill" className="w-10 h-10" />
+            </button>
+            <button
+              className=" shadow-md font-bold bg-pink-100 text-pink-500 p-4 rounded-full hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
+              onClick={() => setMusic("forest")}
+            >
+              <Icon icon="mingcute:tree-fill" className="w-10 h-10" />
+            </button>
+            <button
+              className=" shadow-md font-bold bg-pink-100 text-pink-500 p-4 rounded-full hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
+              onClick={() => setMusic("white")}
+            >
+              <Icon icon="mingcute:sparkles-fill" className="w-10 h-10" />
+            </button>
+          </div>
+        </div>
+
         <div className="absolute z-10 top-10 flex flex-col gap-4 items-center">
           <h2 className="text-6xl font-extrabold text-pink-500 ">
             {mode === "focus"
@@ -239,14 +270,6 @@ function Pomodoro({ goto }) {
               value={goal}
               setValue={setGoal}
             />
-          </div>
-        )}
-
-        {showMusic && (
-          <div>
-            <button onClick={() => setMusic("rain")}>a </button>
-            <button onClick={() => setMusic("forest")}>b </button>
-            <button onClick={() => setMusic("white")}>c </button>
           </div>
         )}
       </div>
