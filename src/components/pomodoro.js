@@ -126,7 +126,9 @@ function Pomodoro({ goto }) {
         </div>
         <div className="flex gap-6 items-center justify-center">
           <button
-            className="font-bold bg-pink-100/70 text-pink-500 backdrop-blur-md shadow-md p-4 rounded-full hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
+            className={`font-bold bg-pink-100/70 text-pink-500 backdrop-blur-md shadow-md p-4 rounded-full hover:bg-pink-200 transition duration-300 ease-in-out
+            ${running ? "opacity-50 cursor-not-allowed" : "hover:scale-110"}`}
+            disabled={running}
             onClick={() => showSettings(!settings)}
           >
             <Icon icon="mingcute:settings-6-fill" className="w-10 h-10" />
@@ -141,7 +143,9 @@ function Pomodoro({ goto }) {
             />
           </button>
           <button
-            className="font-bold bg-pink-100/70 text-pink-500 backdrop-blur-md shadow-md p-4 rounded-full hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
+            className={`font-bold bg-pink-100/70 text-pink-500 backdrop-blur-md shadow-md p-4 rounded-full hover:bg-pink-200 transition duration-300 ease-in-out
+            ${running ? "opacity-50 cursor-not-allowed" : "hover:scale-110"}`}
+            disabled={running}
             onClick={() => {
               if (mode === "focus") setTime(minutes * 60);
               else if (mode === "shortBreak") setTime(sbreak * 60);
@@ -156,7 +160,12 @@ function Pomodoro({ goto }) {
           <div className="absolute inset-10 z-20 bg-pink-300/70 backdrop-blur-md shadow-lg rounded-3xl p-6 flex flex-col justify-center items-center gap-10">
             <button
               className="absolute left-10 top-10 bg-pink-100 text-pink-500 shadow-md rounded-full p-4 hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
-              onClick={() => showSettings(false)}
+              onClick={() => {
+                showSettings(false);
+                if (mode === "focus") setTime(minutes * 60);
+                else if (mode === "shortBreak") setTime(sbreak * 60);
+                else if (mode === "longBreak") setTime(lbreak * 60);
+              }}
             >
               <Icon icon="mingcute:close-fill" className="w-10 h-10" />
             </button>
