@@ -76,10 +76,10 @@ function Pomodoro({ goto }) {
         >
           <Icon icon="ph:flower-fill" className="w-10 h-10" />
         </button>
-        <h2 className="absolute z-10 top-10 text-6xl font-extrabold text-pink-500 ">
-          {mode}
-        </h2>
-        <h3>{tlaps} / 8</h3>
+        <div className="absolute z-10 top-10 flex flex-col gap-4 items-center">
+          <h2 className="text-6xl font-extrabold text-pink-500 ">{mode}</h2>
+          <h3 className="text-pink-500 font-extrabold text-4xl">{tlaps} / 8</h3>
+        </div>
         <div className="drop-shadow-lg font-extrabold text-pink-200 text-[80px] sm:text-[100px] md:text-[160px] lg:text-[250px]">
           {formatTime()}
         </div>
