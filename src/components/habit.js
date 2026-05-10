@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 
 function HabitTracker({ goto }) {
+  let currentMonth = new Date().getMonth();
+  let currentyear = new Date().getFullYear();
+
   let [month, setMonth] = useState(new Date().getMonth());
   let [year, setYear] = useState(new Date().getFullYear());
   let [hname, setName] = useState("");
@@ -56,11 +59,18 @@ function HabitTracker({ goto }) {
     );
   }, [monthKey, daysInMonth]);
 
+  let createdDay =
+    month === currentMonth && year === currentyear ? new Date().getDate() : 1;
+
   let addHabit = () => {
     if (!hname) return;
     let updatedHabit = [
       ...habit,
-      { name: hname, progress: { [monthKey]: Array(daysInMonth).fill(false) } },
+      {
+        name: hname,
+        createdAt: { month: month, year: year, day: createdDay },
+        progress: { [monthKey]: Array(daysInMonth).fill(false) },
+      },
     ];
     setHabit(updatedHabit);
     setName("");
@@ -118,19 +128,37 @@ function HabitTracker({ goto }) {
         onChange={(e) => setName(e.target.value)}
       />
       <button onClick={addHabit}>Add</button>
-      {habit.map((h, id) => (
-        <div key={id}>
-          <p>{h.name}</p>
-          {(h.progress[monthKey] || []).map((d, dayid) => (
-            <input
-              key={dayid}
-              type="checkbox"
-              checked={d}
-              onChange={() => toggleDay(id, dayid)}
-            />
-          ))}
-        </div>
-      ))}
+      <h2>{month}</h2>
+      {habit.map((h, id) => {
+        if (
+          year < h.createdAt.year ||
+          (year === h.createdAt.year && month < h.createdAt.month)
+        ) {
+          return null;
+        }
+        return (
+          <div key={id}>
+            <p>{h.name}</p>
+            {(h.progress[monthKey] || []).map((d, dayid) => {
+              let beforeCreation =
+                year === h.createdAt.year &&
+                month === h.createdAt.month &&
+                dayid + 1 < h.createdAt.day;
+              if (beforeCreation) {
+                return <input key={dayid} type="checkbox" disabled />;
+              }
+              return (
+                <input
+                  key={dayid}
+                  type="checkbox"
+                  checked={d}
+                  onChange={() => toggleDay(id, dayid)}
+                />
+              );
+            })}
+          </div>
+        );
+      })}
     </div>
   );
 }
