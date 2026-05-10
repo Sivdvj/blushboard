@@ -111,7 +111,7 @@ function HabitTracker({ goto }) {
             >
               <Icon icon="ic:round-navigate-before" className="w-12 h-12" />
             </button>
-            <h2>
+            <h2 className="text-4xl font-bold text-pink-500 drop-shadow-md w-80 text-center">
               {months[month]} {year}
             </h2>
             <button
@@ -145,6 +145,20 @@ function HabitTracker({ goto }) {
           </div>
         </div>
 
+        <div className="flex gap-10 w-full items-center">
+          <div className="w-1/4"></div>
+
+          <div className="flex w-3/4 gap-4 items-center justify-start">
+            {Array.from({ length: daysInMonth }, (_, i) => (
+              <div
+                key={i}
+                className="w-5 text-center text-xs font-bold text-pink-400"
+              >
+                {i + 1}
+              </div>
+            ))}
+          </div>
+        </div>
         {habit.map((h, id) => {
           if (
             year < h.createdAt.year ||
