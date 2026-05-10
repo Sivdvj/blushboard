@@ -1,13 +1,36 @@
 import { useState, useEffect } from "react";
 
 function HabitTracker({ goto }) {
-  const daysInMonth = 30;
+  let [month, setMonth] = useState(new Date().getMonth());
+  let [year, setYear] = useState(new Date().getFullYear());
   let [hname, setName] = useState("");
+  let monthKey = `${year}-${month}`;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
   let [habit, setHabit] = useState(() => {
     return (
       JSON.parse(localStorage.getItem("habits")) || [
-        { name: "Drink Water", days: Array(daysInMonth).fill(false) },
-        { name: "DSA", days: Array(daysInMonth).fill(false) },
+        {
+          name: "Drink Water",
+          createdAt: {
+            month: month,
+            year: year,
+            day: new Date().getDate(),
+          },
+          progress: {
+            [monthKey]: Array(daysInMonth).fill(false),
+          },
+        },
+        {
+          name: "DSA",
+          createdAt: {
+            month: month,
+            year: year,
+            day: new Date().getDate(),
+          },
+          progress: {
+            [monthKey]: Array(daysInMonth).fill(false),
+          },
+        },
       ]
     );
   });
@@ -16,22 +39,45 @@ function HabitTracker({ goto }) {
     localStorage.setItem("habits", JSON.stringify(habit));
   }, [habit]);
 
+  useEffect(() => {
+    setHabit((prev) =>
+      prev.map((h) => {
+        if (!h.progress[monthKey]) {
+          return {
+            ...h,
+            progress: {
+              ...h.progress,
+              [monthKey]: Array(daysInMonth).fill(false),
+            },
+          };
+        }
+        return h;
+      }),
+    );
+  }, [monthKey, daysInMonth]);
+
   let addHabit = () => {
     if (!hname) return;
     let updatedHabit = [
       ...habit,
-      { name: hname, days: Array(daysInMonth).fill(false) },
+      { name: hname, progress: { [monthKey]: Array(daysInMonth).fill(false) } },
     ];
     setHabit(updatedHabit);
     setName("");
   };
+
   let toggleDay = (id, dayid) => {
     let updatedHabits = habit.map((h, i) => {
       if (i !== id) return h;
 
       return {
         ...h,
-        days: h.days.map((d, j) => (j === dayid ? !d : d)),
+        progress: {
+          ...h.progress,
+          [monthKey]: h.progress[monthKey].map((d, j) =>
+            j === dayid ? !d : d,
+          ),
+        },
       };
     });
 
@@ -40,6 +86,30 @@ function HabitTracker({ goto }) {
   return (
     <div>
       <h2>Habit Tracker</h2>
+      <button
+        onClick={() => {
+          if (month === 0) {
+            setMonth(11);
+            setYear((prev) => prev - 1);
+          } else {
+            setMonth((prev) => prev - 1);
+          }
+        }}
+      >
+        Prev
+      </button>
+      <button
+        onClick={() => {
+          if (month === 11) {
+            setMonth(0);
+            setYear((prev) => prev + 1);
+          } else {
+            setMonth((prev) => prev + 1);
+          }
+        }}
+      >
+        Next
+      </button>
       <button onClick={() => goto("home")}>Back</button>
       <input
         type="text"
@@ -51,7 +121,7 @@ function HabitTracker({ goto }) {
       {habit.map((h, id) => (
         <div key={id}>
           <p>{h.name}</p>
-          {h.days.map((d, dayid) => (
+          {(h.progress[monthKey] || []).map((d, dayid) => (
             <input
               key={dayid}
               type="checkbox"
