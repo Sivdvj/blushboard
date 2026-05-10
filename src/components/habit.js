@@ -10,32 +10,7 @@ function HabitTracker({ goto }) {
   let monthKey = `${year}-${month}`;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   let [habit, setHabit] = useState(() => {
-    return (
-      JSON.parse(localStorage.getItem("habits")) || [
-        {
-          name: "Drink Water",
-          createdAt: {
-            month: month,
-            year: year,
-            day: new Date().getDate(),
-          },
-          progress: {
-            [monthKey]: Array(daysInMonth).fill(false),
-          },
-        },
-        {
-          name: "DSA",
-          createdAt: {
-            month: month,
-            year: year,
-            day: new Date().getDate(),
-          },
-          progress: {
-            [monthKey]: Array(daysInMonth).fill(false),
-          },
-        },
-      ]
-    );
+    return JSON.parse(localStorage.getItem("habits")) || [];
   });
 
   useEffect(() => {
