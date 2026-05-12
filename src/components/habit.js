@@ -85,7 +85,7 @@ function HabitTracker({ goto }) {
   };
   return (
     <div className="absolute z-0 bg-pink-200 inset-0">
-      <div className="relative flex flex-col gap-6 h-screen justify-center items-center z-10">
+      <div className="relative flex flex-col gap-6 h-screen justify-start pt-72 items-center z-10">
         <button
           className="p-4 rounded-full shadow-md absolute left-10 top-10 bg-pink-100 text-pink-500 hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
           onClick={() => goto("home")}
@@ -94,9 +94,6 @@ function HabitTracker({ goto }) {
         </button>
 
         <div className="absolute top-20 flex flex-col gap-10 items-center justify-center">
-          <h2 className="text-6xl font-extrabold text-pink-500">
-            Habit Tracker
-          </h2>
           <div className="flex gap-20 items-center justify-center">
             <button
               className="p-2 rounded-full shadow-md bg-pink-100 text-pink-500 hover:bg-pink-200 hover:scale-110 transition duratiion-300 ease-in-out"
@@ -144,69 +141,154 @@ function HabitTracker({ goto }) {
             </button>
           </div>
         </div>
+        <div className="w-[85%] max-h-[95%] overflow-y-auto bg-white/20 backdrop-blur-md rounded-xl shadow-xl border border-white/30 p-8 flex flex-col gap-6 [&::-webkit-scrollbar]:w-4 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-pink-400/50 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-pink-500/50 [&::-webkit-scrollbar-thumb]:border-4 [&::-webkit-scrollbar-thumb]:border-solid [&::-webkit-scrollbar-thumb]:border-transparent [&::-webkit-scrollbar-thumb]:bg-clip-padding">
+          <div className="flex gap-10 items-center">
+            <div className="w-[20%]"></div>
 
-        <div className="flex gap-10 w-full items-center">
-          <div className="w-1/4"></div>
-
-          <div className="flex w-3/4 gap-4 items-center justify-start">
-            {Array.from({ length: daysInMonth }, (_, i) => {
-              let isToday =
-                i + 1 === new Date().getDate() &&
-                month === currentMonth &&
-                year === currentyear;
-              return (
-                <div key={i} className="flex items-center justify-center">
-                  <div
-                    className={`w-5 h-5 flex items-center justify-center text-xs font-bold rounded-full text-pink-400 ${isToday ? "bg-pink-300 shadow-md" : "w-5 h-5"}`}
-                  >
-                    {i + 1}
+            <div className="flex flex-1 gap-4 items-center justify-start">
+              {Array.from({ length: daysInMonth }, (_, i) => {
+                let isToday =
+                  i + 1 === new Date().getDate() &&
+                  month === currentMonth &&
+                  year === currentyear;
+                return (
+                  <div key={i} className="flex items-center justify-center">
+                    <div
+                      className={`w-5 h-5 flex items-center justify-center text-xs font-bold rounded-full text-pink-400 ${isToday ? "bg-pink-300 shadow-md" : "w-5 h-5"}`}
+                    >
+                      {i + 1}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
+            <div className="w-12 text-center text-xs font-bold text-pink-500 uppercase drop-shadow-sm">
+              Done
+            </div>
           </div>
-        </div>
-        {habit.map((h, id) => {
-          if (
-            year < h.createdAt.year ||
-            (year === h.createdAt.year && month < h.createdAt.month)
-          ) {
-            return null;
-          }
-          return (
-            <div key={id} className="flex gap-10 w-full items-center">
-              <div className="flex w-1/4 justify-end">
-                <p className="text-pink-500 drop-shadow-md text-xl font-bold capitalize">
-                  {h.name}
-                </p>
-              </div>
-              <div className="flex w-3/4 gap-4 items-center justify-start">
-                {(h.progress[monthKey] || []).map((d, dayid) => {
-                  let beforeCreation =
-                    year === h.createdAt.year &&
-                    month === h.createdAt.month &&
-                    dayid + 1 < h.createdAt.day;
-                  if (beforeCreation) {
+          {habit.map((h, id) => {
+            if (
+              year < h.createdAt.year ||
+              (year === h.createdAt.year && month < h.createdAt.month)
+            ) {
+              return null;
+            }
+
+            let validDays = (h.progress[monthKey] || []).filter((_, i) => {
+              let beforeCreation =
+                year === h.createdAt.year &&
+                month === h.createdAt.month &&
+                i + 1 < h.createdAt.day;
+
+              return !beforeCreation;
+            });
+
+            let completedDays = validDays.filter((d) => d).length;
+
+            let percentage =
+              validDays.length === 0
+                ? 0
+                : Math.round((completedDays / validDays.length) * 100);
+
+            return (
+              <div key={id} className="flex gap-10 w-full items-center">
+                <div className="flex w-[20%] justify-end">
+                  <p className="text-pink-500 drop-shadow-md text-xl font-bold capitalize">
+                    {h.name}
+                  </p>
+                </div>
+                <div className="flex flex-1 gap-4 items-center justify-start">
+                  {(h.progress[monthKey] || []).map((d, dayid) => {
+                    let beforeCreation =
+                      year === h.createdAt.year &&
+                      month === h.createdAt.month &&
+                      dayid + 1 < h.createdAt.day;
+                    if (beforeCreation) {
+                      return (
+                        <div
+                          key={dayid}
+                          className="w-5 h-5 rounded-full bg-pink-400 opacity-30"
+                        />
+                      );
+                    }
                     return (
                       <div
                         key={dayid}
-                        className="w-5 h-5 rounded-full bg-pink-400 opacity-30"
+                        onClick={() => toggleDay(id, dayid)}
+                        className={`w-5 h-5 rounded-full cursor-pointer
+                      ${d ? "bg-pink-500 scale-105 shadow-md" : "bg-pink-100 border border-pink-500 hover:bg-pink-400 hover:scale-110 transition duration-300 ease-in-out"}`}
                       />
                     );
+                  })}
+                </div>
+                <div className="w-12 flex justify-center">
+                  <p className="text-pink-400 font-bold text-lg drop-shadow-sm">
+                    {percentage}%
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+
+          {habit.length > 0 && (
+            <div className="flex gap-10 w-full items-center mt-2 pt-4 border-t-2 border-white/40 sticky bottom-0 bg-pink-200 backdrop-blur-md">
+              <div className="w-[20%] justify-end flex flex-col gap-2">
+                <p className="text-pink-500/80 drop-shadow-sm text-sm font-bold uppercase tracking-wider">
+                  Completed
+                </p>
+                <p className="text-pink-500/80 drop-shadow-sm text-sm font-bold uppercase tracking-wider">
+                  Not Completed
+                </p>
+              </div>
+              <div className="flex flex-1 gap-4 items-center justify-start">
+                {Array.from({ length: daysInMonth }, (_, dayid) => {
+                  let totalActive = 0;
+                  let totalCompleted = 0;
+
+                  habit.forEach((h) => {
+                    if (
+                      year < h.createdAt.year ||
+                      (year === h.createdAt.year && month < h.createdAt.month)
+                    )
+                      return;
+                    if (
+                      year === h.createdAt.year &&
+                      month === h.createdAt.month &&
+                      dayid + 1 < h.createdAt.day
+                    )
+                      return;
+                    totalActive++;
+                    if (h.progress[monthKey]?.[dayid]) {
+                      totalCompleted++;
+                    }
+                  });
+
+                  if (totalActive === 0) {
+                    return (
+                      <div
+                        key={dayid}
+                        className="w-5 h-5 flex items-center justify-center text-md font-bold text-pink-400/40"
+                      >
+                        -
+                      </div>
+                    );
                   }
+
                   return (
                     <div
                       key={dayid}
-                      onClick={() => toggleDay(id, dayid)}
-                      className={`w-5 h-5 rounded-full cursor-pointer
-                      ${d ? "bg-pink-500 scale-105 shadow-md" : "bg-pink-100 border border-pink-500 hover:bg-pink-400 hover:scale-110 transition duration-300 ease-in-out"}`}
-                    />
+                      className=" flex flex-col gap-2 items-center justify-center text-sm font-bold text-pink-500/80"
+                    >
+                      <p>{totalCompleted}</p>
+                      <p>{totalActive - totalCompleted}</p>
+                    </div>
                   );
                 })}
               </div>
+              <div className="w-12"></div>
             </div>
-          );
-        })}
+          )}
+        </div>
       </div>
     </div>
   );
