@@ -149,14 +149,21 @@ function HabitTracker({ goto }) {
           <div className="w-1/4"></div>
 
           <div className="flex w-3/4 gap-4 items-center justify-start">
-            {Array.from({ length: daysInMonth }, (_, i) => (
-              <div
-                key={i}
-                className="w-5 text-center text-xs font-bold text-pink-400"
-              >
-                {i + 1}
-              </div>
-            ))}
+            {Array.from({ length: daysInMonth }, (_, i) => {
+              let isToday =
+                i + 1 === new Date().getDate() &&
+                month === currentMonth &&
+                year === currentyear;
+              return (
+                <div key={i} className="flex items-center justify-center">
+                  <div
+                    className={`w-5 h-5 flex items-center justify-center text-xs font-bold rounded-full text-pink-400 ${isToday ? "bg-pink-300 shadow-md" : "w-5 h-5"}`}
+                  >
+                    {i + 1}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
         {habit.map((h, id) => {
