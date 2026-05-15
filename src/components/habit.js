@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
-function HabitTracker({ goto }) {
+import { useNavigate } from "react-router";
+
+function HabitTracker() {
+  let navigate = useNavigate();
+
   let currentMonth = new Date().getMonth();
   let currentyear = new Date().getFullYear();
 
@@ -88,7 +92,7 @@ function HabitTracker({ goto }) {
       <div className="relative flex flex-col gap-6 h-screen justify-start pt-72 items-center z-10">
         <button
           className="p-4 rounded-full shadow-md absolute left-10 top-10 bg-pink-100 text-pink-500 hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
-          onClick={() => goto("home")}
+          onClick={() => navigate("/")}
         >
           <Icon icon="ph:flower-fill" className="w-10 h-10" />
         </button>

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
-function Reminder({ goto }) {
+function Reminder() {
+  let navigate = useNavigate();
+
   let [reminder, setReminder] = useState(() => {
     return JSON.parse(localStorage.getItem("reminder")) || [];
   });
@@ -25,7 +28,7 @@ function Reminder({ goto }) {
   return (
     <div>
       <h2>Reminders</h2>
-      <button onClick={() => goto("home")}>Back</button>
+      <button onClick={() => navigate("/")}>Back</button>
 
       <input
         type="text"

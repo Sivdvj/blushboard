@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 
-function Events({ goto }) {
+function Events() {
+  let navigate = useNavigate();
+
   let [date, setDate] = useState("");
   let [name, setName] = useState("");
   let [event, setEvent] = useState(() => {
@@ -37,7 +40,7 @@ function Events({ goto }) {
   return (
     <div>
       <h2>Events</h2>
-      <button onClick={() => goto("home")}>Back</button>
+      <button onClick={() => navigate("/")}>Back</button>
 
       <input
         type="text"

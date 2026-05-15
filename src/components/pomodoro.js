@@ -6,14 +6,16 @@ import Bell from "../assets/sounds/bell.mp3";
 import Forest from "../assets/sounds/forest.mp3";
 import Rain from "../assets/sounds/rain.mp3";
 import WhiteNoise from "../assets/sounds/white-noise.mp3";
-
+import { useNavigate } from "react-router";
 let tracks = {
   rain: Rain,
   forest: Forest,
   white: WhiteNoise,
 };
 
-function Pomodoro({ goto }) {
+function Pomodoro() {
+  let navigate = useNavigate();
+
   let bellSound = useRef(new Audio(Bell));
 
   let [music, setMusic] = useState("rain");
@@ -132,7 +134,7 @@ function Pomodoro({ goto }) {
       <div className="relative z-10 flex flex-col items-center justify-center h-screen gap-10">
         <button
           className="shadow-md absolute z-10 left-10 top-10 font-bold bg-pink-100 text-pink-500 p-4 rounded-full hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
-          onClick={() => goto("home")}
+          onClick={() => navigate("/")}
         >
           <Icon icon="ph:flower-fill" className="w-10 h-10" />
         </button>
