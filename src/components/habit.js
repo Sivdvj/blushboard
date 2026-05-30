@@ -172,49 +172,43 @@ function HabitTracker() {
           <Icon icon="ph:flower-fill" className="w-10 h-10" />
         </button>
 
-        <div className="absolute top-14 left-40 w-80 bg-white/20 backdrop-blur-md rounded-xl shadow-xl border border-white/30 p-6">
-          <h3 className="text-pink-400 text-2xl font-bold mb-4 text-center">
-            Habit Breakdown
-          </h3>
-
-          <PieChart width={250} height={220}>
-            <Pie
-              data={habitBreakdown}
-              dataKey="value"
-              nameKey="name"
-              innerRadius={45}
-              outerRadius={80}
-              paddingAngle={1}
-            >
-              {habitBreakdown.map((_, index) => (
-                <Cell
-                  key={index}
-                  fill={
-                    ["#ec4899", "#f472b6", "#f9a8d4", "#fbcfe8", "#fce7f3"][
-                      index % 5
-                    ]
-                  }
-                />
-              ))}
-            </Pie>
-
-            <Tooltip />
-          </PieChart>
-
-          <div className="flex flex-col gap-2 mt-2">
-            {habitBreakdown.map((h) => (
-              <div
-                key={h.name}
-                className="flex justify-between text-pink-500 font-semibold"
+        <div className="absolute top-14 left-40 w-80 h-[200px] bg-white/20 backdrop-blur-md rounded-xl shadow-xl border border-white/30 p-6">
+          <div className="flex justify-center">
+            <PieChart width={250} height={150}>
+              <Pie
+                data={habitBreakdown}
+                dataKey="value"
+                nameKey="name"
+                innerRadius={35}
+                outerRadius={70}
+                paddingAngle={1}
               >
-                <span>{h.name}</span>
-                <span>{h.value}</span>
-              </div>
-            ))}
+                {habitBreakdown.map((_, index) => (
+                  <Cell
+                    key={index}
+                    fill={
+                      ["#ec4899", "#f472b6", "#f9a8d4", "#fbcfe8", "#fce7f3"][
+                        index % 5
+                      ]
+                    }
+                  />
+                ))}
+              </Pie>
+
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#fce7f3",
+                  borderRadius: "8px",
+                  color: "#ec4899",
+                }}
+                labelStyle={{ fontWeight: "bold", color: "#ec4899" }}
+                itemStyle={{ color: "#ec4899" }}
+              />
+            </PieChart>
           </div>
         </div>
 
-        <div className="absolute top-14 right-40 w-80 bg-white/20 backdrop-blur-md rounded-xl shadow-xl border border-white/30 p-6">
+        <div className="absolute top-14 right-40 w-80 h-[200px] bg-white/20 backdrop-blur-md rounded-xl shadow-xl border border-white/30 p-6">
           <h3 className="text-pink-400 text-2xl font-bold mb-4 text-center tracking-wide">
             Monthly Glance
           </h3>
