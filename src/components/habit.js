@@ -281,7 +281,7 @@ function HabitTracker() {
                   return (
                     <div
                       key={dayid}
-                      className=" flex flex-col gap-2 items-center justify-center text-sm font-bold text-pink-500/80"
+                      className="w-5 h-5 flex flex-col gap-2 items-center justify-center text-sm font-bold text-pink-500/80"
                     >
                       <p>{totalCompleted}</p>
                       <p>{totalActive - totalCompleted}</p>
