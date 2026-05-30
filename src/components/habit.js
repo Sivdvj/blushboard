@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router";
+import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
 function HabitTracker() {
   let navigate = useNavigate();
@@ -145,6 +146,22 @@ function HabitTracker() {
     if (totalActive > 0 && totalActive === totalCompleted) perfectDays++;
   }
 
+  let habitBreakdown = validHabits
+    .map((h) => {
+      let completed = 0;
+      (h.progress[monthKey] || []).forEach((d, dayid) => {
+        if (isDayBeforeCreation(h, dayid)) return;
+        if (d) completed++;
+      });
+
+      return {
+        name: h.name,
+        value: completed,
+      };
+    })
+    .filter((h) => h.value > 0)
+    .sort((a, b) => b.value - a.value);
+
   return (
     <div className="absolute z-0 bg-pink-200 inset-0">
       <div className="relative flex flex-col gap-6 h-screen justify-start pt-72 items-center z-10">
@@ -154,6 +171,48 @@ function HabitTracker() {
         >
           <Icon icon="ph:flower-fill" className="w-10 h-10" />
         </button>
+
+        <div className="absolute top-14 left-40 w-80 bg-white/20 backdrop-blur-md rounded-xl shadow-xl border border-white/30 p-6">
+          <h3 className="text-pink-400 text-2xl font-bold mb-4 text-center">
+            Habit Breakdown
+          </h3>
+
+          <PieChart width={250} height={220}>
+            <Pie
+              data={habitBreakdown}
+              dataKey="value"
+              nameKey="name"
+              innerRadius={45}
+              outerRadius={80}
+              paddingAngle={1}
+            >
+              {habitBreakdown.map((_, index) => (
+                <Cell
+                  key={index}
+                  fill={
+                    ["#ec4899", "#f472b6", "#f9a8d4", "#fbcfe8", "#fce7f3"][
+                      index % 5
+                    ]
+                  }
+                />
+              ))}
+            </Pie>
+
+            <Tooltip />
+          </PieChart>
+
+          <div className="flex flex-col gap-2 mt-2">
+            {habitBreakdown.map((h) => (
+              <div
+                key={h.name}
+                className="flex justify-between text-pink-500 font-semibold"
+              >
+                <span>{h.name}</span>
+                <span>{h.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
 
         <div className="absolute top-14 right-40 w-80 bg-white/20 backdrop-blur-md rounded-xl shadow-xl border border-white/30 p-6">
           <h3 className="text-pink-400 text-2xl font-bold mb-4 text-center tracking-wide">
