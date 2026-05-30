@@ -93,6 +93,87 @@ function HabitTracker() {
 
     setHabit(updatedHabits);
   };
+
+  let activeHabits = habit.filter((h) => {
+    if (
+      year < h.createdAt.year ||
+      (year === h.createdAt.year && month < h.createdAt.month)
+    )
+      return false;
+
+    if (
+      h.deletedAt &&
+      (year > h.deletedAt.year ||
+        (year === h.deletedAt.year && month >= h.deletedAt.month))
+    )
+      return false;
+
+    return true;
+  }).length;
+
+  let totalChecks = 0;
+  let completedChecks = 0;
+
+  habit.forEach((h) => {
+    if (
+      year < h.createdAt.year ||
+      (year === h.createdAt.year && month < h.createdAt.month)
+    )
+      return;
+
+    if (
+      h.deletedAt &&
+      (year > h.deletedAt.year ||
+        (year === h.deletedAt.year && month >= h.deletedAt.month))
+    )
+      return;
+
+    (h.progress[monthKey] || []).forEach((d, dayid) => {
+      let beforeCreation =
+        year === h.createdAt.year &&
+        month === h.createdAt.month &&
+        dayid + 1 < h.createdAt.day;
+      if (beforeCreation) return;
+      totalChecks++;
+      if (d) {
+        completedChecks++;
+      }
+    });
+  });
+
+  let perfectDays = 0;
+  for (let dayid = 0; dayid < daysInMonth; dayid++) {
+    let totalActive = 0;
+    let totalCompleted = 0;
+
+    habit.forEach((h) => {
+      if (
+        year < h.createdAt.year ||
+        (year === h.createdAt.year && month < h.createdAt.month)
+      )
+        return;
+
+      if (
+        h.deletedAt &&
+        (year > h.deletedAt.year ||
+          (year === h.deletedAt.year && month >= h.deletedAt.month))
+      )
+        return;
+
+      let beforeCreation =
+        year === h.createdAt.year &&
+        month === h.createdAt.month &&
+        dayid + 1 < h.createdAt.day;
+      if (beforeCreation) return;
+      totalActive++;
+      if (h.progress[monthKey]?.[dayid]) {
+        totalCompleted++;
+      }
+    });
+
+    if (totalActive > 0 && totalActive === totalCompleted) perfectDays++;
+  }
+
   return (
     <div className="absolute z-0 bg-pink-200 inset-0">
       <div className="relative flex flex-col gap-6 h-screen justify-start pt-72 items-center z-10">
@@ -103,6 +184,36 @@ function HabitTracker() {
           <Icon icon="ph:flower-fill" className="w-10 h-10" />
         </button>
 
+        <div className="absolute top-14 right-40 w-80 bg-white/20 backdrop-blur-md rounded-xl shadow-xl border border-white/30 p-6">
+          <h3 className="text-pink-400 text-2xl font-bold mb-4 text-center tracking-wide">
+            Monthly Glance
+          </h3>
+
+          <div className="px-4 flex flex-col gap-3 text-sm text-pink-500 font-bold uppercase tracking-wider">
+            <div className="flex justify-between">
+              <p className="flex gap-2 items-center">
+                <Icon icon="tabler:flower-filled" className="w-4 h-4" /> Habits:
+              </p>
+              <p>{activeHabits}</p>
+            </div>
+            <div className="flex justify-between">
+              <p className="flex gap-2 items-center">
+                <Icon icon="tabler:flower-filled" className="w-4 h-4" />
+                Completion:
+              </p>
+              <p>
+                {completedChecks} / {totalChecks}
+              </p>
+            </div>
+            <div className="flex justify-between">
+              <p className="flex gap-2 items-center">
+                <Icon icon="tabler:flower-filled" className="w-4 h-4" />
+                Perfect Days:
+              </p>
+              <p>{perfectDays}</p>
+            </div>
+          </div>
+        </div>
         <div className="absolute top-20 flex flex-col gap-10 items-center justify-center">
           <div className="flex gap-20 items-center justify-center">
             <button
