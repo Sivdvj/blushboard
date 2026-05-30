@@ -63,6 +63,7 @@ function HabitTracker() {
       {
         name: hname,
         createdAt: { month: month, year: year, day: createdDay },
+        deletedAt: null,
         progress: { [monthKey]: Array(daysInMonth).fill(false) },
       },
     ];
@@ -70,6 +71,11 @@ function HabitTracker() {
     setName("");
   };
 
+  let deleteHabit = (id) => {
+    setHabit((prev) =>
+      prev.map((h, i) => (i === id ? { ...h, deletedAt: { month, year } } : h)),
+    );
+  };
   let toggleDay = (id, dayid) => {
     let updatedHabits = habit.map((h, i) => {
       if (i !== id) return h;
@@ -178,6 +184,14 @@ function HabitTracker() {
               return null;
             }
 
+            if (
+              h.deletedAt &&
+              (year > h.deletedAt.year ||
+                (year === h.deletedAt.year && month >= h.deletedAt.month))
+            ) {
+              return null;
+            }
+
             let validDays = (h.progress[monthKey] || []).filter((_, i) => {
               let beforeCreation =
                 year === h.createdAt.year &&
@@ -196,7 +210,13 @@ function HabitTracker() {
 
             return (
               <div key={id} className="flex gap-10 w-full items-center">
-                <div className="flex w-[20%] justify-end">
+                <div className="flex w-[20%] justify-between items-center">
+                  <button
+                    onClick={() => deleteHabit(id)}
+                    className="p-2 rounded-full shadow-md bg-pink-100 text-pink-500 hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
+                  >
+                    <Icon icon="mingcute:delete-2-line" className="w-6 h-6" />
+                  </button>
                   <p className="text-pink-500 drop-shadow-md text-xl font-bold capitalize">
                     {h.name}
                   </p>
@@ -235,7 +255,7 @@ function HabitTracker() {
           })}
 
           {habit.length > 0 && (
-            <div className="flex gap-10 w-full items-center mt-2 pt-4 border-t-2 border-white/40 sticky bottom-0 bg-pink-200 backdrop-blur-md">
+            <div className="flex gap-10 items-center mt-2 pt-4 pb-8 px-8 -mx-8 -mb-8 border-t-2 border-white/40 sticky -bottom-8 bg-pink-200 backdrop-blur-md z-10">
               <div className="w-[20%] justify-end flex flex-col gap-2">
                 <p className="text-pink-500/80 drop-shadow-sm text-sm font-bold uppercase tracking-wider">
                   Completed
@@ -255,6 +275,15 @@ function HabitTracker() {
                       (year === h.createdAt.year && month < h.createdAt.month)
                     )
                       return;
+
+                    if (
+                      h.deletedAt &&
+                      (year > h.deletedAt.year ||
+                        (year === h.deletedAt.year &&
+                          month >= h.deletedAt.month))
+                    )
+                      return;
+
                     if (
                       year === h.createdAt.year &&
                       month === h.createdAt.month &&
