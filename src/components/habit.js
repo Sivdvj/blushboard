@@ -94,50 +94,40 @@ function HabitTracker() {
     setHabit(updatedHabits);
   };
 
-  let activeHabits = habit.filter((h) => {
+  const isHabitValidForMonth = (h) => {
     if (
       year < h.createdAt.year ||
       (year === h.createdAt.year && month < h.createdAt.month)
     )
       return false;
-
     if (
       h.deletedAt &&
       (year > h.deletedAt.year ||
         (year === h.deletedAt.year && month >= h.deletedAt.month))
     )
       return false;
-
     return true;
-  }).length;
+  };
+
+  const isDayBeforeCreation = (h, dayid) => {
+    return (
+      year === h.createdAt.year &&
+      month === h.createdAt.month &&
+      dayid + 1 < h.createdAt.day
+    );
+  };
+
+  let validHabits = habit.filter(isHabitValidForMonth);
+  let activeHabits = validHabits.length;
 
   let totalChecks = 0;
   let completedChecks = 0;
 
-  habit.forEach((h) => {
-    if (
-      year < h.createdAt.year ||
-      (year === h.createdAt.year && month < h.createdAt.month)
-    )
-      return;
-
-    if (
-      h.deletedAt &&
-      (year > h.deletedAt.year ||
-        (year === h.deletedAt.year && month >= h.deletedAt.month))
-    )
-      return;
-
+  validHabits.forEach((h) => {
     (h.progress[monthKey] || []).forEach((d, dayid) => {
-      let beforeCreation =
-        year === h.createdAt.year &&
-        month === h.createdAt.month &&
-        dayid + 1 < h.createdAt.day;
-      if (beforeCreation) return;
+      if (isDayBeforeCreation(h, dayid)) return;
       totalChecks++;
-      if (d) {
-        completedChecks++;
-      }
+      if (d) completedChecks++;
     });
   });
 
@@ -146,29 +136,10 @@ function HabitTracker() {
     let totalActive = 0;
     let totalCompleted = 0;
 
-    habit.forEach((h) => {
-      if (
-        year < h.createdAt.year ||
-        (year === h.createdAt.year && month < h.createdAt.month)
-      )
-        return;
-
-      if (
-        h.deletedAt &&
-        (year > h.deletedAt.year ||
-          (year === h.deletedAt.year && month >= h.deletedAt.month))
-      )
-        return;
-
-      let beforeCreation =
-        year === h.createdAt.year &&
-        month === h.createdAt.month &&
-        dayid + 1 < h.createdAt.day;
-      if (beforeCreation) return;
+    validHabits.forEach((h) => {
+      if (isDayBeforeCreation(h, dayid)) return;
       totalActive++;
-      if (h.progress[monthKey]?.[dayid]) {
-        totalCompleted++;
-      }
+      if (h.progress[monthKey]?.[dayid]) totalCompleted++;
     });
 
     if (totalActive > 0 && totalActive === totalCompleted) perfectDays++;
@@ -288,29 +259,11 @@ function HabitTracker() {
             </div>
           </div>
           {habit.map((h, id) => {
-            if (
-              year < h.createdAt.year ||
-              (year === h.createdAt.year && month < h.createdAt.month)
-            ) {
-              return null;
-            }
+            if (!isHabitValidForMonth(h)) return null;
 
-            if (
-              h.deletedAt &&
-              (year > h.deletedAt.year ||
-                (year === h.deletedAt.year && month >= h.deletedAt.month))
-            ) {
-              return null;
-            }
-
-            let validDays = (h.progress[monthKey] || []).filter((_, i) => {
-              let beforeCreation =
-                year === h.createdAt.year &&
-                month === h.createdAt.month &&
-                i + 1 < h.createdAt.day;
-
-              return !beforeCreation;
-            });
+            let validDays = (h.progress[monthKey] || []).filter(
+              (_, i) => !isDayBeforeCreation(h, i),
+            );
 
             let completedDays = validDays.filter((d) => d).length;
 
@@ -334,11 +287,7 @@ function HabitTracker() {
                 </div>
                 <div className="flex flex-1 gap-4 items-center justify-start">
                   {(h.progress[monthKey] || []).map((d, dayid) => {
-                    let beforeCreation =
-                      year === h.createdAt.year &&
-                      month === h.createdAt.month &&
-                      dayid + 1 < h.createdAt.day;
-                    if (beforeCreation) {
+                    if (isDayBeforeCreation(h, dayid)) {
                       return (
                         <div
                           key={dayid}
@@ -380,31 +329,10 @@ function HabitTracker() {
                   let totalActive = 0;
                   let totalCompleted = 0;
 
-                  habit.forEach((h) => {
-                    if (
-                      year < h.createdAt.year ||
-                      (year === h.createdAt.year && month < h.createdAt.month)
-                    )
-                      return;
-
-                    if (
-                      h.deletedAt &&
-                      (year > h.deletedAt.year ||
-                        (year === h.deletedAt.year &&
-                          month >= h.deletedAt.month))
-                    )
-                      return;
-
-                    if (
-                      year === h.createdAt.year &&
-                      month === h.createdAt.month &&
-                      dayid + 1 < h.createdAt.day
-                    )
-                      return;
+                  validHabits.forEach((h) => {
+                    if (isDayBeforeCreation(h, dayid)) return;
                     totalActive++;
-                    if (h.progress[monthKey]?.[dayid]) {
-                      totalCompleted++;
-                    }
+                    if (h.progress[monthKey]?.[dayid]) totalCompleted++;
                   });
 
                   if (totalActive === 0) {
