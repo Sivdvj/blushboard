@@ -20,6 +20,7 @@ function Pomodoro() {
 
   let [music, setMusic] = useState("rain");
   let [showMusic, setShowMusic] = useState(false);
+  let [isMuted, setIsMuted] = useState(false);
   let sound = useRef(new Audio(tracks[music]));
 
   let [running, setRunning] = useState(false);
@@ -71,18 +72,18 @@ function Pomodoro() {
 
     sound.current.loop = true;
     sound.current.volume = 0.5;
-    if (running) {
+    if (running && !isMuted) {
       sound.current.play();
     }
   }, [music]);
 
   useEffect(() => {
-    if (running) {
+    if (running && !isMuted) {
       sound.current.play();
     } else {
       sound.current.pause();
     }
-  }, [running]);
+  }, [running, isMuted]);
 
   useEffect(() => {
     if (!running) return;
@@ -138,7 +139,7 @@ function Pomodoro() {
         >
           <Icon icon="ph:flower-fill" className="w-10 h-10" />
         </button>
-        <div className="absolute flex flex-col justify-center items-center gap-4 z-10 right-10 top-10 ">
+        <div className="absolute flex flex-col justify-center items-center gap-6 z-10 right-10 top-10 ">
           <button
             className="shadow-md font-bold bg-pink-100 text-pink-500 p-4 rounded-full hover:bg-pink-200 hover:scale-110 transition duration-300 ease-in-out"
             onClick={() => setShowMusic(!showMusic)}
@@ -147,7 +148,7 @@ function Pomodoro() {
           </button>
 
           <div
-            className={`flex flex-col gap-4 transition-all duration-500 ease-in-out
+            className={`flex flex-col gap-6 transition-all duration-500 ease-in-out
           ${
             showMusic
               ? "opacity-100 translate-y-0"
@@ -173,6 +174,22 @@ function Pomodoro() {
               <Icon icon="mingcute:sparkles-fill" className="w-10 h-10" />
             </button>
           </div>
+
+          <button
+            className={`absolute top-0 right-24 shadow-md font-bold bg-pink-100 text-pink-500 p-4 rounded-full hover:bg-pink-200 hover:scale-110 transition duration-500 ease-in-out ${
+              showMusic
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 translate-x-4 pointer-events-none"
+            }`}
+            onClick={() => setIsMuted(!isMuted)}
+          >
+            <Icon
+              icon={
+                isMuted ? "mingcute:volume-off-fill" : "mingcute:volume-fill"
+              }
+              className="w-10 h-10"
+            />
+          </button>
         </div>
 
         <div className="absolute z-10 top-10 flex flex-col gap-4 items-center">
